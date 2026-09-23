@@ -1,0 +1,738 @@
+{
+  "id": "market-block-01",
+  "name": "The Strangest Flea Market",
+  "version": 2,
+  "minX": -57,
+  "maxX": 57,
+  "minZ": -35,
+  "maxZ": 35,
+  "spawnX": -49,
+  "spawnZ": -21,
+  "speed": 1.65,
+  "radius": 0.36,
+  "obstacles": [
+    {
+      "id": "building-0",
+      "x": -33,
+      "z": 0,
+      "w": 10.9,
+      "d": 32,
+      "kind": "building",
+      "height": 15,
+      "color": "805d52"
+    },
+    {
+      "id": "building-1",
+      "x": -22,
+      "z": 0,
+      "w": 10.9,
+      "d": 32,
+      "kind": "building",
+      "height": 18,
+      "color": "77665b"
+    },
+    {
+      "id": "building-2",
+      "x": -11,
+      "z": 0,
+      "w": 10.9,
+      "d": 32,
+      "kind": "building",
+      "height": 21,
+      "color": "7a514b"
+    },
+    {
+      "id": "building-3",
+      "x": 0,
+      "z": 0,
+      "w": 10.9,
+      "d": 32,
+      "kind": "building",
+      "height": 15,
+      "color": "66716b"
+    },
+    {
+      "id": "building-4",
+      "x": 11,
+      "z": 0,
+      "w": 10.9,
+      "d": 32,
+      "kind": "building",
+      "height": 18,
+      "color": "8a705a"
+    },
+    {
+      "id": "building-5",
+      "x": 22,
+      "z": 0,
+      "w": 10.9,
+      "d": 32,
+      "kind": "building",
+      "height": 21,
+      "color": "615b58"
+    },
+    {
+      "id": "building-6",
+      "x": 33,
+      "z": 0,
+      "w": 10.9,
+      "d": 32,
+      "kind": "building",
+      "height": 15,
+      "color": "755d53"
+    },
+    {
+      "id": "exchange",
+      "x": -33,
+      "z": -18.4,
+      "w": 3.5,
+      "d": 1.6,
+      "kind": "stall",
+      "height": 1.1,
+      "color": "65706f"
+    },
+    {
+      "id": "board",
+      "x": -21,
+      "z": -18.4,
+      "w": 3.5,
+      "d": 1.6,
+      "kind": "stall",
+      "height": 1.1,
+      "color": "65706f"
+    },
+    {
+      "id": "mushroom",
+      "x": -24,
+      "z": 18.4,
+      "w": 3.5,
+      "d": 1.6,
+      "kind": "stall",
+      "height": 1.1,
+      "color": "65706f"
+    },
+    {
+      "id": "origami",
+      "x": 0,
+      "z": 18.4,
+      "w": 3.5,
+      "d": 1.6,
+      "kind": "stall",
+      "height": 1.1,
+      "color": "65706f"
+    },
+    {
+      "id": "bags",
+      "x": 24,
+      "z": 18.4,
+      "w": 3.5,
+      "d": 1.6,
+      "kind": "stall",
+      "height": 1.1,
+      "color": "65706f"
+    },
+    {
+      "id": "bodega",
+      "x": 23,
+      "z": -18.4,
+      "w": 3.5,
+      "d": 1.6,
+      "kind": "stall",
+      "height": 1.1,
+      "color": "65706f"
+    },
+    {
+      "id": "infobot",
+      "x": -43,
+      "z": 2.7,
+      "w": 1.2,
+      "d": 1,
+      "kind": "fixture",
+      "height": 1.3,
+      "color": "65706f"
+    },
+    {
+      "id": "records",
+      "x": 37,
+      "z": -18.3,
+      "w": 1.2,
+      "d": 1,
+      "kind": "fixture",
+      "height": 1.3,
+      "color": "65706f"
+    },
+    {
+      "id": "trash",
+      "x": -8,
+      "z": -18.3,
+      "w": 1.2,
+      "d": 1,
+      "kind": "fixture",
+      "height": 1.3,
+      "color": "65706f"
+    },
+    {
+      "id": "bench",
+      "x": 43,
+      "z": 9.7,
+      "w": 2.4,
+      "d": 1,
+      "kind": "fixture",
+      "height": 1.3,
+      "color": "65706f"
+    },
+    {
+      "id": "closure",
+      "x": -52,
+      "z": -29.3,
+      "w": 1.2,
+      "d": 1,
+      "kind": "fixture",
+      "height": 1.3,
+      "color": "65706f"
+    },
+    {
+      "id": "car-0",
+      "x": -31,
+      "z": -27,
+      "w": 4.9,
+      "d": 1.9,
+      "kind": "car",
+      "height": 1.5,
+      "color": "d0a64c"
+    },
+    {
+      "id": "car-1",
+      "x": -13,
+      "z": -27,
+      "w": 4.9,
+      "d": 1.9,
+      "kind": "car",
+      "height": 1.5,
+      "color": "87968e"
+    },
+    {
+      "id": "car-2",
+      "x": 10,
+      "z": -27,
+      "w": 4.9,
+      "d": 1.9,
+      "kind": "car",
+      "height": 1.5,
+      "color": "814e48"
+    },
+    {
+      "id": "car-3",
+      "x": 30,
+      "z": -27,
+      "w": 4.9,
+      "d": 1.9,
+      "kind": "car",
+      "height": 1.5,
+      "color": "415468"
+    },
+    {
+      "id": "car-4",
+      "x": -31,
+      "z": 27,
+      "w": 4.9,
+      "d": 1.9,
+      "kind": "car",
+      "height": 1.5,
+      "color": "527174"
+    },
+    {
+      "id": "car-5",
+      "x": -9,
+      "z": 27,
+      "w": 4.9,
+      "d": 1.9,
+      "kind": "car",
+      "height": 1.5,
+      "color": "bcafa0"
+    },
+    {
+      "id": "car-6",
+      "x": 13,
+      "z": 27,
+      "w": 4.9,
+      "d": 1.9,
+      "kind": "car",
+      "height": 1.5,
+      "color": "d0a64c"
+    },
+    {
+      "id": "car-7",
+      "x": 33,
+      "z": 27,
+      "w": 4.9,
+      "d": 1.9,
+      "kind": "car",
+      "height": 1.5,
+      "color": "665d65"
+    },
+    {
+      "id": "hydrant-0",
+      "x": -46,
+      "z": -15,
+      "w": 0.45,
+      "d": 0.45,
+      "kind": "hydrant",
+      "height": 0.8,
+      "color": "a94f42"
+    },
+    {
+      "id": "hydrant-1",
+      "x": -46,
+      "z": 15,
+      "w": 0.45,
+      "d": 0.45,
+      "kind": "hydrant",
+      "height": 0.8,
+      "color": "a94f42"
+    },
+    {
+      "id": "hydrant-2",
+      "x": 46,
+      "z": -15,
+      "w": 0.45,
+      "d": 0.45,
+      "kind": "hydrant",
+      "height": 0.8,
+      "color": "a94f42"
+    },
+    {
+      "id": "hydrant-3",
+      "x": 46,
+      "z": 16,
+      "w": 0.45,
+      "d": 0.45,
+      "kind": "hydrant",
+      "height": 0.8,
+      "color": "a94f42"
+    },
+    {
+      "id": "hydrant-4",
+      "x": -15,
+      "z": -23,
+      "w": 0.45,
+      "d": 0.45,
+      "kind": "hydrant",
+      "height": 0.8,
+      "color": "a94f42"
+    },
+    {
+      "id": "hydrant-5",
+      "x": 8,
+      "z": 23,
+      "w": 0.45,
+      "d": 0.45,
+      "kind": "hydrant",
+      "height": 0.8,
+      "color": "a94f42"
+    },
+    {
+      "id": "phone-0",
+      "x": -40,
+      "z": -20,
+      "w": 1.2,
+      "d": 1,
+      "kind": "prop",
+      "height": 1.8,
+      "color": "697a75"
+    },
+    {
+      "id": "news-1",
+      "x": -40,
+      "z": 20,
+      "w": 1.2,
+      "d": 1,
+      "kind": "prop",
+      "height": 1,
+      "color": "697a75"
+    },
+    {
+      "id": "dumpster-2",
+      "x": 39,
+      "z": 20,
+      "w": 2.6,
+      "d": 1,
+      "kind": "prop",
+      "height": 1,
+      "color": "697a75"
+    },
+    {
+      "id": "crate-3",
+      "x": 7,
+      "z": -18,
+      "w": 1.2,
+      "d": 1,
+      "kind": "prop",
+      "height": 1,
+      "color": "697a75"
+    },
+    {
+      "id": "crate-4",
+      "x": 11,
+      "z": -18,
+      "w": 1.2,
+      "d": 1,
+      "kind": "prop",
+      "height": 1,
+      "color": "697a75"
+    },
+    {
+      "id": "crate-5",
+      "x": -15,
+      "z": 18,
+      "w": 1.2,
+      "d": 1,
+      "kind": "prop",
+      "height": 1,
+      "color": "697a75"
+    },
+    {
+      "id": "barrier-north",
+      "x": 0,
+      "z": 35,
+      "w": 114,
+      "d": 0.6,
+      "kind": "barrier",
+      "height": 2.4,
+      "color": "65706f"
+    },
+    {
+      "id": "barrier-south",
+      "x": 0,
+      "z": -35,
+      "w": 114,
+      "d": 0.6,
+      "kind": "barrier",
+      "height": 2.4,
+      "color": "65706f"
+    },
+    {
+      "id": "barrier-east",
+      "x": 57,
+      "z": 0,
+      "w": 0.6,
+      "d": 70,
+      "kind": "barrier",
+      "height": 2.4,
+      "color": "65706f"
+    },
+    {
+      "id": "barrier-west",
+      "x": -57,
+      "z": 0,
+      "w": 0.6,
+      "d": 70,
+      "kind": "barrier",
+      "height": 2.4,
+      "color": "65706f"
+    }
+  ],
+  "vendors": [
+    {
+      "id": "exchange",
+      "name": "Exchange Machine",
+      "subtitle": "SCARCITY EXCHANGE",
+      "x": -33,
+      "z": -20.0,
+      "kind": "machine",
+      "line": "Your dollars are very interesting. As paper.",
+      "action": "exchange",
+      "actionLabel": "Exchange the Earth seed packet",
+      "facing": 0,
+      "propX": -33,
+      "propZ": -18.4
+    },
+    {
+      "id": "board",
+      "name": "Market Work Board",
+      "subtitle": "WORK HERE. LIVE HERE.",
+      "x": -21,
+      "z": -20.0,
+      "kind": "board",
+      "line": "A mushroom delivery needs a pair of legs. Yours appear to be available.",
+      "action": "job",
+      "actionLabel": "Take the delivery job",
+      "facing": 0,
+      "propX": -21,
+      "propZ": -18.4
+    },
+    {
+      "id": "mushroom",
+      "name": "Mushroom Merchant",
+      "subtitle": "FUNGI FROM ELSEWHERE",
+      "x": -24,
+      "z": 20.0,
+      "kind": "mushroom",
+      "line": "Different planets. Same question. Yes, that one is edible.",
+      "action": "pickup",
+      "actionLabel": "Collect the bodega delivery",
+      "item": "muffshroom",
+      "price": 3,
+      "itemLabel": "Glowing mushroom muffin",
+      "facing": 180,
+      "propX": -24,
+      "propZ": 18.4
+    },
+    {
+      "id": "origami",
+      "name": "Fox Origami",
+      "subtitle": "FOLDED, NEVER CAGED",
+      "x": 0,
+      "z": 20.0,
+      "kind": "fox",
+      "line": "It is paper. It has simply had more practice than yours.",
+      "item": "paper-bird",
+      "price": 6,
+      "itemLabel": "Living paper bird",
+      "facing": 180,
+      "propX": 0,
+      "propZ": 18.4
+    },
+    {
+      "id": "bags",
+      "name": "Guard Bag",
+      "subtitle": "CARRYING IS A PROFESSION",
+      "x": 24,
+      "z": 20.0,
+      "kind": "bag",
+      "line": "I carry the shopping. I do not carry the conversation.",
+      "item": "guard-bag",
+      "price": 12,
+      "itemLabel": "Hire a guard bag",
+      "facing": 180,
+      "propX": 24,
+      "propZ": 18.4
+    },
+    {
+      "id": "bodega",
+      "name": "Bodega Clerk",
+      "subtitle": "OPEN TO EVERYONE",
+      "x": 23,
+      "z": -20.0,
+      "kind": "robot",
+      "line": "Put the mushrooms on the counter. If the counter objects, try the other end.",
+      "action": "deliver",
+      "actionLabel": "Hand over the delivery",
+      "item": "raabaa",
+      "price": 2,
+      "itemLabel": "Raa Baa soda",
+      "facing": 0,
+      "propX": 23,
+      "propZ": -18.4
+    },
+    {
+      "id": "infobot",
+      "name": "Elderly Infobot",
+      "x": -43,
+      "z": 1,
+      "kind": "infobot",
+      "subtitle": "MARKET INFORMATION",
+      "line": "Earth sent an interstellar signal on June 19, 1984. Now New York hosts a market for the galaxy. Earth money has no value here: exchange resources for tokens. Work here to live here. Market goods stay in NYC. Humans remain on probation; off-world portals are closed to you.",
+      "propX": -43,
+      "propZ": 2.7,
+      "facing": 0
+    },
+    {
+      "id": "records",
+      "name": "Vinyl Record Cyclops",
+      "x": 37,
+      "z": -20.0,
+      "kind": "cyclops",
+      "subtitle": "RECORDS FROM EARTH",
+      "line": "Two sides. One hole. They have been explaining records to me all morning.",
+      "propX": 37,
+      "propZ": -18.3,
+      "facing": 0,
+      "item": "vinyl",
+      "itemLabel": "Earth vinyl record",
+      "price": 4
+    },
+    {
+      "id": "trash",
+      "name": "Sentient Trash Can",
+      "x": -8,
+      "z": -20.0,
+      "kind": "trash",
+      "subtitle": "SANITATION",
+      "line": "If it is rubbish, I can help. If it is valuable, try the exchange. Please make up your mind before feeding me.",
+      "propX": -8,
+      "propZ": -18.3,
+      "facing": 0,
+      "action": "recycle",
+      "actionLabel": "Feed one piece of litter"
+    },
+    {
+      "id": "bench",
+      "name": "Sentient Bus Bench",
+      "x": 43,
+      "z": 8,
+      "kind": "bench",
+      "subtitle": "TAKE A MOMENT",
+      "line": "I have been here longer than the roadworks. At this rate, I will be here after you, too.",
+      "propX": 43,
+      "propZ": 9.7,
+      "facing": 0
+    },
+    {
+      "id": "closure",
+      "name": "Construction Notice",
+      "x": -52,
+      "z": -31,
+      "kind": "notice",
+      "subtitle": "STREET CLOSED",
+      "line": "Utility work. All exits from this block are closed. Follow the sidewalks around the block; the market remains open.",
+      "propX": -52,
+      "propZ": -29.3,
+      "facing": 0
+    }
+  ],
+  "jogSpeed": 3.8,
+  "year": 1985,
+  "pickups": [
+    {
+      "id": "street-0",
+      "name": "Discarded newspaper",
+      "kind": "newspaper",
+      "x": -36.0965091037756,
+      "z": -22.10498765817413
+    },
+    {
+      "id": "street-1",
+      "name": "Empty glass bottle",
+      "kind": "bottle",
+      "x": -27.986668728075543,
+      "z": -22.091381075399816
+    },
+    {
+      "id": "street-2",
+      "name": "Unlabelled cassette",
+      "kind": "cassette",
+      "x": -19.692698834084815,
+      "z": -22.03094660366346
+    },
+    {
+      "id": "street-3",
+      "name": "Paper coffee cup",
+      "kind": "coffee-cup",
+      "x": -11.630176224343707,
+      "z": -21.898002790152226
+    },
+    {
+      "id": "street-4",
+      "name": "Discarded newspaper",
+      "kind": "newspaper",
+      "x": -4.0401456351027525,
+      "z": -21.764654714507916
+    },
+    {
+      "id": "street-5",
+      "name": "Empty glass bottle",
+      "kind": "bottle",
+      "x": 3.7354747499288736,
+      "z": -21.91029012024846
+    },
+    {
+      "id": "street-6",
+      "name": "Unlabelled cassette",
+      "kind": "cassette",
+      "x": 11.724361311981566,
+      "z": -21.964762801181607
+    },
+    {
+      "id": "street-7",
+      "name": "Paper coffee cup",
+      "kind": "coffee-cup",
+      "x": 19.632339965521375,
+      "z": -22.006479970052688
+    },
+    {
+      "id": "street-8",
+      "name": "Discarded newspaper",
+      "kind": "newspaper",
+      "x": 28.397023288693717,
+      "z": -21.750846813150144
+    },
+    {
+      "id": "street-9",
+      "name": "Empty glass bottle",
+      "kind": "bottle",
+      "x": 36.45398223108092,
+      "z": -22.153629474470755
+    },
+    {
+      "id": "street-10",
+      "name": "Unlabelled cassette",
+      "kind": "cassette",
+      "x": -36.15782408178319,
+      "z": 21.829205146530846
+    },
+    {
+      "id": "street-11",
+      "name": "Paper coffee cup",
+      "kind": "coffee-cup",
+      "x": -27.849487736381413,
+      "z": 21.97378524949713
+    },
+    {
+      "id": "street-12",
+      "name": "Discarded newspaper",
+      "kind": "newspaper",
+      "x": -20.257116596738772,
+      "z": 21.969514047463694
+    },
+    {
+      "id": "street-13",
+      "name": "Empty glass bottle",
+      "kind": "bottle",
+      "x": -11.69768647490026,
+      "z": 21.89905219235789
+    },
+    {
+      "id": "street-14",
+      "name": "Unlabelled cassette",
+      "kind": "cassette",
+      "x": -4.303610258641555,
+      "z": 21.91898977472006
+    },
+    {
+      "id": "street-15",
+      "name": "Paper coffee cup",
+      "kind": "coffee-cup",
+      "x": 4.021812674024298,
+      "z": 22.068916972661583
+    },
+    {
+      "id": "street-16",
+      "name": "Discarded newspaper",
+      "kind": "newspaper",
+      "x": 12.242246701647314,
+      "z": 22.28978229123831
+    },
+    {
+      "id": "street-17",
+      "name": "Empty glass bottle",
+      "kind": "bottle",
+      "x": 20.134406237608186,
+      "z": 21.76867406332962
+    },
+    {
+      "id": "street-18",
+      "name": "Unlabelled cassette",
+      "kind": "cassette",
+      "x": 28.09626755503347,
+      "z": 22.24422106726485
+    },
+    {
+      "id": "street-19",
+      "name": "Paper coffee cup",
+      "kind": "coffee-cup",
+      "x": 36.04414127398287,
+      "z": 21.83054511810639
+    }
+  ]
+}
