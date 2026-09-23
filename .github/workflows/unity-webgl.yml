@@ -1,8 +1,26 @@
 name: Build Unity browser game
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'Assets/**'
+      - 'Packages/**'
+      - 'ProjectSettings/**'
+      - 'server/**'
+      - 'scripts/**'
+      - 'package*.json'
+      - 'Dockerfile'
+      - 'compose.yaml'
+      - 'Caddyfile'
+      - '.dockerignore'
+      - 'railway.json'
+      - '.github/workflows/unity-webgl.yml'
 permissions:
   contents: read
+concurrency:
+  group: unity-webgl-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,16 +29,43 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
       - name: Check Unity activation configuration
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         run: |
-          if [ -z "$UNITY_LICENSE" ] || [ -z "$UNITY_EMAIL" ] || [ -z "$UNITY_PASSWORD" ]; then
-            echo 'Configure the Unity activation secrets using docs/DEPLOYMENT.md, or build locally with Unity Hub.'
+          missing=()
+          [ -n "$UNITY_EMAIL" ] || missing+=(UNITY_EMAIL)
+          [ -n "$UNITY_PASSWORD" ] || missing+=(UNITY_PASSWORD)
+          if [ -z "$UNITY_LICENSE" ] && [ -z "$UNITY_SERIAL" ]; then
+            missing+=('UNITY_LICENSE (Personal) or UNITY_SERIAL (Pro)')
+          fi
+          if [ "${#missing[@]}" -gt 0 ]; then
+            {
+              echo '## Unity activation required'
+              echo 'The server checks ran, but Unity compilation has not started.'
+              printf '\nMissing repository Actions secrets:\n'
+              printf -- '- `%s`\n' "${missing[@]}"
+              printf '\n[Add secrets](https://github.com/bralynnb/UO/settings/secrets/actions) · [Activation guide](https://github.com/bralynnb/UO/blob/main/docs/ACTIVATION.md)\n'
+              printf '\nAfter adding them, choose **Re-run failed jobs**. Never put license contents or passwords in commits or chat.\n'
+            } >> "$GITHUB_STEP_SUMMARY"
+            printf '::error::Unity activation is not configured. Missing: %s\n' "${missing[*]}"
             exit 1
           fi
+          if [ -n "$UNITY_LICENSE" ] && [ -n "$UNITY_SERIAL" ]; then
+            echo '::error::Choose one license method: UNITY_LICENSE for Personal, or UNITY_SERIAL for Pro.'
+            exit 1
+          fi
+          echo 'Unity credential configuration is present. The next step will verify activation and compile the game.' >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/cache@v4
         with:
           path: Library
@@ -29,6 +74,7 @@ jobs:
       - uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
@@ -36,19 +82,27 @@ jobs:
           targetPlatform: WebGL
           buildMethod: TSFM.Editor.BuildGame.WebGL
           versioning: None
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-      - run: npm ci
-      - run: npm run check
       - name: Check generated build
-        run: test -f server/public/game/index.html
+        run: npm run check:build
+      - name: Verify deployment container can be built
+        run: docker build --tag tsfm:verified .
       - name: Assemble deployment bundle
-        run: tar -czf tsfm-deploy.tar.gz server Assets/TSFM/Resources/block.json package.json package-lock.json Dockerfile compose.yaml Caddyfile .dockerignore README.md docs
+        run: |
+          tar --exclude=server/test -czf tsfm-deploy.tar.gz server Assets/TSFM/Resources/block.json scripts/check-build.mjs package.json package-lock.json Dockerfile compose.yaml Caddyfile railway.json .dockerignore README.md docs
+          sha256sum tsfm-deploy.tar.gz > tsfm-deploy.tar.gz.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: tsfm-unity-browser-and-server
-          path: tsfm-deploy.tar.gz
+          path: |
+            tsfm-deploy.tar.gz
+            tsfm-deploy.tar.gz.sha256
           if-no-files-found: error
           retention-days: 14
+      - name: Report build result
+        run: |
+          {
+            echo '## Unity WebGL compiled'
+            echo 'The browser files passed structural checks and the deployment container built successfully.'
+            echo 'Download **tsfm-unity-browser-and-server** below. Hosting and a browser playtest are still required.'
+            printf '\n[Railway deployment instructions](https://github.com/bralynnb/UO/blob/main/docs/DEPLOYMENT.md#railway)\n'
+          } >> "$GITHUB_STEP_SUMMARY"

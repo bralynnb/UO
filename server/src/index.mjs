@@ -1,16 +1,18 @@
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import { resolve, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { WebSocketServer, WebSocket } from 'ws';
 import { PlayerStore } from './store.mjs';
 import { Market } from './game.mjs';
+import { inspectClientBuild } from './client-build.mjs';
 const root = fileURLToPath(new URL('../public',import.meta.url));
 const types={'.html':'text/html; charset=utf-8','.js':'application/javascript','.json':'application/json','.wasm':'application/wasm','.data':'application/octet-stream','.css':'text/css','.png':'image/png','.svg':'image/svg+xml'};
 export function createMarketServer({database=process.env.DATABASE_PATH||'data/market.sqlite',capacity=Number(process.env.MAX_PLAYERS)||64,publicOrigin=process.env.PUBLIC_ORIGIN,publicDir=root}={}) {
   const store=new PlayerStore(database), market=new Market(store,{capacity});
+  // Deploy/build before starting the process. Restart after a local Unity rebuild.
+  const built=inspectClientBuild(resolve(publicDir,'game')).ready;
   const server=createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');
     res.setHeader('Referrer-Policy','same-origin');
@@ -18,8 +20,7 @@ export function createMarketServer({database=process.env.DATABASE_PATH||'data/ma
     if (!['GET','HEAD'].includes(req.method)) {res.writeHead(405);res.end();return;}
     let path;
     try {path=decodeURIComponent(new URL(req.url,'http://local').pathname);} catch {res.writeHead(400);res.end();return;}
-    const built=existsSync(resolve(publicDir,'game/index.html'));
-    if(path==='/healthz') {res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.end(JSON.stringify({ok:true,clientReady:built,players:market.clients.size,capacity,version:'0.1.0'}));return;}
+    if(path==='/healthz') {res.setHeader('Cache-Control','no-store');res.setHeader('Content-Type','application/json');res.end(JSON.stringify({ok:true,clientReady:built,players:market.clients.size,capacity,version:'0.2.0'}));return;}
     if(path==='/readyz') {res.writeHead(built?200:503,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({ready:built}));return;}
     if(path==='/') {
       if(built) {res.writeHead(302,{Location:'/game/'});res.end();return;}

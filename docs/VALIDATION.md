@@ -4,7 +4,8 @@
 
 - Node.js 24.19.0; locked `ws` dependency installed using `npm ci`.
 - Project/geometry checks passed. The walkable grid includes 5,048 cells; all 11 stations and 20 pickups are reachable from spawn, with a connected route around all four sides of the central building block.
-- All 22 Node tests passed, including real WebSocket joins, shared movement, chat, disconnect, guest persistence, proximity rules, speed limits, static collision, economy, pickup uniqueness, recycling and malformed-message handling.
+- All 26 Node tests passed, including real WebSocket joins, shared movement, chat, disconnect, guest persistence, proximity rules, speed limits, static collision, economy, pickup uniqueness, recycling, malformed-message handling, incomplete build rejection, root redirect and WebAssembly MIME handling. Build-check tests use temporary structural fixtures, not a playable Unity build.
+- `npm run check:build` correctly fails while Unity output is absent. The Docker build and readiness endpoint now share this check instead of accepting an `index.html` file alone.
 - 64-client loopback smoke test: 60 server ticks over three seconds; no simulated player escaped walkable space. Not a browser benchmark or a production capacity certification.
 - Every C# source file was parsed with the tree-sitter C# grammar. Syntax parsing is not semantic compilation against Unity APIs.
 

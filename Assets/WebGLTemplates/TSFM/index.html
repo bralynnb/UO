@@ -12,7 +12,7 @@ const buildUrl='Build';
 const script=document.createElement('script');script.src=buildUrl+'/{{{ LOADER_FILENAME }}}';script.onerror=()=>fail('The Unity build files could not be downloaded.');
 script.onload=()=>createUnityInstance(canvas,{
  dataUrl:buildUrl+'/{{{ DATA_FILENAME }}}',frameworkUrl:buildUrl+'/{{{ FRAMEWORK_FILENAME }}}',codeUrl:buildUrl+'/{{{ CODE_FILENAME }}}',
- streamingAssetsUrl:'StreamingAssets',companyName:'TSFM',productName:'The Strangest Flea Market',productVersion:'0.1.0',
+ streamingAssetsUrl:'StreamingAssets',companyName:'TSFM',productName:'The Strangest Flea Market',productVersion:'0.2.0',
  devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5)
 },p=>{document.getElementById('progress').value=p;document.getElementById('status').textContent='Opening the street… '+Math.round(p*100)+'%';}).then(instance=>{
  document.getElementById('loading').style.display='none';canvas.focus();document.getElementById('fullscreen').onclick=()=>instance.SetFullscreen(1);

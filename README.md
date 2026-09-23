@@ -24,7 +24,7 @@ Repository: [bralynnb/UO](https://github.com/bralynnb/UO).
 2. Add this folder as a Unity project and let it import. The empty startup scene is prepared automatically; runtime scripts generate the block. If needed, use **TSFM → Prepare city block**.
 3. Install Node.js 24, then run `npm ci` followed by `npm start` in this folder.
 4. Press **Play** in Unity. Enter a guest name; the Editor connects to the local multiplayer server.
-5. Choose **TSFM → Build browser game**. After it succeeds, open **http://localhost:8080**. For a second player, use another browser or choose **New guest** in another tab.
+5. Choose **TSFM → Build browser game**. After it succeeds, run `npm run check:build`, restart `npm start`, and open **http://localhost:8080**. For a second player, use another browser or choose **New guest** in another tab.
 
 The server deliberately shows **Build required** until actual Unity WebGL output exists. There is no substitute JavaScript game pretending to be Unity.
 
@@ -49,12 +49,13 @@ Start by exchanging the seed packet for eight scarcity tokens. Take a delivery f
 
 The Node server validates movement speed, collision, proximity, prices, pickup uniqueness and quest rewards. SQLite saves guest progress. The default capacity is 64 connections, not a production-scale MMO guarantee. Guest access is intended for this prototype; production moderation, account recovery, sharding and broader abuse protection are not implemented.
 
-Build the Unity client and deploy it with the Node server behind HTTPS. A static GitHub Pages site alone cannot run this multiplayer server. See [deployment instructions](docs/DEPLOYMENT.md). The repository includes automatic server checks and a manual Unity build workflow. The Unity workflow requires activation secrets before it can produce the browser game.
+Build the Unity client and deploy it with the Node server behind HTTPS. A static GitHub Pages site alone cannot run this multiplayer server. Start with the [Unity activation guide](docs/ACTIVATION.md), then follow the [deployment instructions](docs/DEPLOYMENT.md#railway). Unity builds run on relevant pushes to `main` or manually in Actions. They require activation secrets and produce a checked deployment bundle; `railway.json` configures one game instance and its readiness check. A hosting account, persistent volume, and successful Unity build are still required.
 
 ## Validation
 
 - `npm run check`: all 11 interaction points, all 20 pickups and all four street sides reachable.
-- `npm test`: **22 passing** server and actual WebSocket integration tests.
+- `npm test`: server, actual WebSocket integration, and incomplete-build rejection tests.
+- `npm run check:build`: verifies the generated Unity runtime files before deployment; fails until the game is compiled.
 - `npm run test:load`: 64 local connections, 60 ticks in three seconds; synthetic smoke test only.
 - All 13 C# files parsed for syntax. Unity API compilation, WebGL compilation, rendered camera/UI behavior and browser performance remain unverified.
 

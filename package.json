@@ -10,6 +10,7 @@
     "start": "node server/src/index.mjs",
     "test": "node --test server/test/*.test.mjs",
     "check": "node scripts/check-project.mjs",
+    "check:build": "node scripts/check-build.mjs",
     "test:load": "node scripts/load-test.mjs"
   },
   "dependencies": {

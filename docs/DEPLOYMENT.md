@@ -35,9 +35,9 @@ Close any other Editor instance using this project before a batch build. Review 
 
 ### Build with GitHub Actions
 
-The **Build Unity browser game** workflow runs manually from the Actions tab. It expects the Personal license activation secrets described in [GameCI's current activation instructions](https://game.ci/docs/github/activation/): `UNITY_LICENSE`, `UNITY_EMAIL`, and `UNITY_PASSWORD`. Enter secrets directly in the repository's Actions settings, not in a commit or chat. If you have a different license type, follow the corresponding GameCI activation path and adapt the workflow rather than mixing license types.
+The **Build Unity browser game** workflow runs on relevant pushes to `main` and manually from the Actions tab. Follow the [activation guide](ACTIVATION.md) to configure `UNITY_LICENSE`, `UNITY_EMAIL`, and `UNITY_PASSWORD` for Personal, or `UNITY_SERIAL` with the same email/password secrets for Pro. Choose one license method. Enter secrets directly in the repository's Actions settings. If configuration is missing, the run summary lists the missing secret names and stops before compilation. After adding them, choose **Re-run failed jobs**.
 
-The workflow compiles the Unity client and uploads `tsfm-unity-browser-and-server`, containing `tsfm-deploy.tar.gz`. Download and extract that archive on your host. It includes the browser files, Node server, catalog, and deployment configuration. It does not automatically provision or charge for a hosting account.
+The workflow compiles the Unity client, verifies its referenced runtime files and WebAssembly header, and checks that the Docker image builds. It uploads `tsfm-unity-browser-and-server`, containing `tsfm-deploy.tar.gz` and its SHA-256 checksum. Download and extract that archive on your host. It includes the browser files, Node server, catalog, and deployment configuration. It does not provision or charge for a hosting account.
 
 Reference: [GameCI custom build methods](https://game.ci/docs/github/builder/). The editor build method uses its own default output directory; no custom CI environment forwarding is required.
 
@@ -47,10 +47,11 @@ With the compiled files present:
 
 ```sh
 npm ci
+npm run check:build
 npm start
 ```
 
-Open `http://localhost:8080` in two separate browser profiles. Confirm that each can join, see the other player, move, chat, complete a delivery, spend tokens, and reconnect with the same progress. The guest pass is stored by Unity in that browser's site storage. Clearing site storage loses access to that guest; there is no account recovery or cross-device login in this version.
+Start or restart the server after compiling; build readiness is checked at process startup. Open `http://localhost:8080` in two separate browser profiles. Confirm that each can join, see the other player, move, chat, complete a delivery, spend tokens, and reconnect with the same progress. The guest pass is stored by Unity in that browser's site storage. Clearing site storage loses access to that guest; there is no account recovery or cross-device login in this version.
 
 ## 4. Host the game and server
 
@@ -74,6 +75,46 @@ Caddy serves HTTPS and proxies both game assets and WebSockets to the game proce
 
 The Docker build refuses to proceed without the Unity build, and the HTTPS proxy waits for the game's readiness check. That prevents deploying the setup page as if it were the game.
 
+### Railway
+
+Railway can host the compiled Unity client and Node server together on one HTTPS domain, including `/ws`. Use the compiled deployment bundle, because the GitHub source does not contain the Unity output. Connecting Railway directly to the uncompiled repository will fail the Docker build check.
+
+Prepare an empty service called `tsfm-market` in your Railway project:
+
+| Setting | Value |
+| --- | --- |
+| Deploy source | Local upload of the extracted `tsfm-deploy.tar.gz` bundle |
+| Persistent volume mount | `/app/data` |
+| `DATABASE_PATH` | `/app/data/market.sqlite` |
+| `MAX_PLAYERS` | `64` |
+| `NODE_ENV` | `production` |
+| `RAILWAY_RUN_UID` | `0` (Railway's documented workaround for root-owned mounted volumes) |
+| Replicas | `1`; one shared market process |
+| Health check | `/readyz` |
+| Public domain target port | `8080` (or the service's configured `PORT`) |
+
+`railway.json` supplies the Docker builder, one replica, readiness path, and bounded failure retries. The volume, variables and public domain must be configured in the hosting account. Keep Railway's existing plan and usage limits unless you explicitly approve a change; this configuration does not buy a plan or guarantee free continuous hosting.
+
+Download the successful GitHub build artifact and extract the ZIP, then:
+
+```sh
+sha256sum -c tsfm-deploy.tar.gz.sha256
+mkdir tsfm-deploy
+tar -xzf tsfm-deploy.tar.gz -C tsfm-deploy
+cd tsfm-deploy
+npm ci --omit=dev --ignore-scripts
+npm run check:build
+railway login
+railway link
+railway up --service tsfm-market
+```
+
+Install the [Railway CLI](https://docs.railway.com/cli) first. Run this upload from the extracted bundle, not the Unity project folder; the bundle deliberately omits local credentials, Editor caches and the source repository's rules that ignore generated game files. Keep GitHub source autodeploys disabled for this service. Re-upload the new compiled bundle for each release.
+
+After a healthy deployment, generate a Railway public domain in **Settings → Networking**, set `PUBLIC_ORIGIN` to that exact `https://...` origin, and apply the variable change. Railway provides TLS and WebSocket routing, so the Caddy service is not needed there. Verify `/readyz`, play with two separate guests, then restart the service and confirm the same guest's inventory and wallet survive. Keep the volume attached when redeploying.
+
+References: [public networking](https://docs.railway.com/networking/public-networking/specs-and-limits), [persistent volumes and UID permissions](https://docs.railway.com/volumes/reference), [config as code](https://docs.railway.com/config-as-code/reference).
+
 ### Host Node directly
 
 Set `PORT`, `DATABASE_PATH`, and `PUBLIC_ORIGIN` for the public hostname. Run `npm ci --omit=dev`, then `npm start` under the host's process supervisor. Use the host's HTTPS reverse proxy with WebSocket upgrade support. Keep the database on persistent storage. Make the compiled browser files available under `server/public/game`.
@@ -85,7 +126,7 @@ Set `PORT`, `DATABASE_PATH`, and `PUBLIC_ORIGIN` for the public hostname. Run `n
 | `PUBLIC_ORIGIN` | Same host as request | Expected browser origin, e.g. your HTTPS hostname |
 | `MAX_PLAYERS` | 64 | Maximum simultaneous guests on this single block |
 
-`GET /healthz` confirms process health and reports whether the client build exists. `GET /readyz` returns success only when the browser entry file exists. Readiness is not a substitute for a browser playtest.
+`GET /healthz` confirms process health and reports whether the client passed structural build checks. `GET /readyz` returns success only when the generated entry file, referenced loader/framework/data files, and valid WebAssembly header were present at server startup. Empty, incomplete, or unprocessed template output stays unavailable. Readiness is not a substitute for a browser playtest.
 
 ## Persistence and operations
 
