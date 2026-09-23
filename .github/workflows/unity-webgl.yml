@@ -1,0 +1,54 @@
+name: Build Unity browser game
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check Unity activation configuration
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          if [ -z "$UNITY_LICENSE" ] || [ -z "$UNITY_EMAIL" ] || [ -z "$UNITY_PASSWORD" ]; then
+            echo 'Configure the Unity activation secrets using docs/DEPLOYMENT.md, or build locally with Unity Hub.'
+            exit 1
+          fi
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Unity-6000.0.62f1-WebGL-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: Unity-6000.0.62f1-WebGL-
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: 6000.0.62f1
+          targetPlatform: WebGL
+          buildMethod: TSFM.Editor.BuildGame.WebGL
+          versioning: None
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Check generated build
+        run: test -f server/public/game/index.html
+      - name: Assemble deployment bundle
+        run: tar -czf tsfm-deploy.tar.gz server Assets/TSFM/Resources/block.json package.json package-lock.json Dockerfile compose.yaml Caddyfile .dockerignore README.md docs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tsfm-unity-browser-and-server
+          path: tsfm-deploy.tar.gz
+          if-no-files-found: error
+          retention-days: 14

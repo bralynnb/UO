@@ -1,0 +1,4 @@
+{$DOMAIN} {
+    encode gzip
+    reverse_proxy market:8080
+}

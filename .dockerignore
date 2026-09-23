@@ -1,0 +1,13 @@
+.git
+Library
+Temp
+Logs
+Obj
+node_modules
+data
+*.zip
+*.tar.gz
+*.ulf
+*.alf
+.env
+server/test
