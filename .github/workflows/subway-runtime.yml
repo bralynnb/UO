@@ -1,0 +1,24 @@
+name: Subway runtime support
+on:
+  push:
+    branches: [tsfm-subway-scummvm]
+    paths: [.github/workflows/subway-runtime.yml]
+permissions:
+  contents: read
+jobs:
+  support:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - run: |
+          mkdir -p runtime/data/plugins
+          curl -fL --retry 2 https://scummvm.kuendig.io/data/plugins/index.json -o runtime/data/plugins/index.json
+          curl -fL --retry 2 https://scummvm.kuendig.io/data/plugins/libdetection.so -o runtime/data/plugins/libdetection.so
+          curl -fL --retry 2 https://scummvm.kuendig.io/data/scummclassic.zip -o runtime/data/scummclassic.zip
+          curl -fL --retry 2 https://scummvm.kuendig.io/scummvm.ini -o runtime/scummvm.ini
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: subway-runtime-support
+          path: runtime
+          retention-days: 7
