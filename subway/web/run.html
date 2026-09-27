@@ -5,18 +5,18 @@
 'use strict';
 const canvas=document.getElementById('canvas'),statusEl=document.getElementById('status'),startEl=document.getElementById('start'),progressEl=document.getElementById('progress');
 window.gameEvents=[];window.gameErrors=[];let ready=false,timeout;
-function report(line){const text=String(line);console.log(text);gameEvents.push(text);if(gameEvents.length>500)gameEvents.shift();if(text.includes('TSFM_CAR=')){ready=true;clearTimeout(timeout);document.getElementById('loading').hidden=true;canvas.focus();parent.postMessage({type:'tsfm-ready',line:text},location.origin);}}
+function report(line){const text=String(line);console.log(text);gameEvents.push(text);if(gameEvents.length>1000)gameEvents.shift();if(text.includes('TSFM_CAR=')){ready=true;clearTimeout(timeout);document.getElementById('loading').hidden=true;canvas.focus();parent.postMessage({type:'tsfm-ready',line:text},location.origin);}}
 function failed(e){const msg=String(e);gameErrors.push(msg);console.error(msg);document.getElementById('loading').hidden=false;statusEl.textContent='The ride could not start: '+msg;document.getElementById('retry').hidden=false;progressEl.hidden=true;clearTimeout(timeout);}
 document.getElementById('retry').onclick=()=>location.reload();canvas.addEventListener('contextmenu',e=>e.preventDefault());
 async function checked(path){const r=await fetch(path);if(!r.ok)throw Error(path+' — HTTP '+r.status);return new Uint8Array(await r.arrayBuffer());}
 async function boot(){startEl.hidden=true;progressEl.hidden=false;statusEl.textContent='Loading the ScummVM engine and train…';try{
  const id=new URLSearchParams(location.search).get('build');if(id&&!/^[a-f0-9]{32}$/.test(id))throw Error('Invalid build identifier');const base=id?'/builds/'+id+'/game/':'game/';
  const files=await Promise.all([['/game/tentacle.000',base+'tentacle.000'],['/game/tentacle.001',base+'tentacle.001'],['/plugins/libscumm.so','plugins/libscumm.so']].map(async([p,u])=>[p,await checked(u)]));
- window.Module={canvas,arguments:['--config=/boot.ini','--path=/game','--savepath=/saves','--music-driver=null','--gfx-mode=normal','--no-filtering','--no-aspect-ratio','--debuglevel=3','tentacle'],print:report,printErr:report,setStatus:line=>{if(line&&!ready)statusEl.textContent=line;},onAbort:failed,
- preRun:[()=>{for(const p of ['/game','/plugins','/saves'])if(!FS.analyzePath(p).exists)FS.mkdir(p);for(const[p,b]of files)FS.writeFile(p,b);FS.writeFile('/boot.ini','[scummvm]\npluginspath=/plugins\ngui_theme=builtin\nsubtitles=true\nspeech_mute=true\nshow_splash=false\n');
+ window.Module={canvas,arguments:['--config=/boot.ini','--path=/game','--savepath=/saves','--music-driver=null','--gfx-mode=normal','--no-filtering','--no-aspect-ratio','--debuglevel=3','tsfm'],print:report,printErr:report,setStatus:line=>{if(line&&!ready)statusEl.textContent=line;},onAbort:failed,
+ preRun:[()=>{for(const p of ['/game','/plugins','/saves'])if(!FS.analyzePath(p).exists)FS.mkdir(p);for(const[p,b]of files)FS.writeFile(p,b);
+ FS.writeFile('/boot.ini','[scummvm]\npluginspath=/plugins\ngui_theme=builtin\nsubtitles=true\nspeech_mute=true\nshow_splash=false\n\n[engine_plugin_files]\nscumm=/plugins/libscumm.so\n\n[tsfm]\nengineid=scumm\ngameid=tentacle\npath=/game\ndescription=TSFM - Night Train\nplatform=pc\nlanguage=en\n');
  addRunDependency('tsfm-saves');try{FS.mount(IDBFS,{autoPersist:true},'/saves');FS.syncfs(true,e=>{if(e)report('Persistent saves unavailable: '+e);removeRunDependency('tsfm-saves');});}catch(e){report('Persistent saves unavailable: '+e);removeRunDependency('tsfm-saves');}}]};
  // The upstream web shell resets Module.arguments and reads launch options from the fragment.
- // Set the fragment without emitting hashchange, before that shell installs its listener.
  history.replaceState(null,'',location.pathname+location.search+'#'+encodeURI(Module.arguments.join(' ')));
  const js=document.createElement('script');js.src='scummvm.js';js.onerror=()=>failed('Engine script download failed.');document.body.appendChild(js);timeout=setTimeout(()=>{if(!ready)failed('Engine startup timed out. Retry or open in a full desktop browser.');},90000);
 }catch(e){failed(e.message);}}
