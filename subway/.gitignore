@@ -1,0 +1,12 @@
+.toolchain/
+__pycache__/
+web/scummvm.js
+web/scummvm.wasm
+web/plugins/
+web/data/
+web/game/
+web/source/
+web/builds/
+web/project.json
+web/scummvm.ini
+test-results/

@@ -1,24 +1,57 @@
-name: Subway runtime support
+name: Subway browser verification
 on:
   push:
     branches: [tsfm-subway-scummvm]
-    paths: [.github/workflows/subway-runtime.yml]
+    paths: ['subway/**', '.github/workflows/subway-runtime.yml']
+  workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: subway-browser
+  cancel-in-progress: true
 jobs:
-  support:
+  browser:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
-      - run: |
-          mkdir -p runtime/data/plugins
-          curl -fL --retry 2 https://scummvm.kuendig.io/data/plugins/index.json -o runtime/data/plugins/index.json
-          curl -fL --retry 2 https://scummvm.kuendig.io/data/plugins/libdetection.so -o runtime/data/plugins/libdetection.so
-          curl -fL --retry 2 https://scummvm.kuendig.io/data/scummclassic.zip -o runtime/data/scummclassic.zip
-          curl -fL --retry 2 https://scummvm.kuendig.io/scummvm.ini -o runtime/scummvm.ini
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          name: subway-runtime-support
-          path: runtime
+          python-version: '3.12'
+      - name: Install compiler and browser dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y bison flex build-essential libpng-dev
+          python -m pip install Pillow==11.3.0 playwright
+          python -m playwright install --with-deps chromium
+      - name: Build real SCUMM game and fetch matching runtime
+        run: sh subway/tools/bootstrap.sh
+      - name: Verify browser inputs and editor compilation
+        env:
+          SCUMMC_ROOT: ${{ github.workspace }}/subway/.toolchain/scummc
+        run: |
+          cd subway
+          python serve.py > server.log 2>&1 &
+          sleep 2
+          python tests/browser_test.py
+      - name: Keep test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: subway-browser-results
+          path: |
+            subway/test-results
+            subway/server.log
+          retention-days: 7
+      - name: Package game and source
+        if: success()
+        run: |
+          cd subway
+          rm -rf web/builds/* .toolchain
+          zip -qr ../tsfm-subway-browser.zip . -x 'test-results/*' 'server.log'
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: tsfm-subway-browser
+          path: tsfm-subway-browser.zip
           retention-days: 7
