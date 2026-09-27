@@ -1,0 +1,51 @@
+name: Subway ScummVM toolchain
+on:
+  push:
+    branches: [tsfm-subway-scummvm]
+    paths: [.github/workflows/subway-toolchain.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tools:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y bison flex build-essential libpng-dev libsdl2-dev scummvm python3-pil
+      - name: Build the SCUMM authoring tools
+        run: |
+          mkdir -p output
+          git clone https://github.com/AlbanBedel/scummc.git output/scummc
+          cd output/scummc
+          git checkout 2f61ce0f7b5051e920876dc4b71935dc99f38fff
+          sed -i 's@man/%\.xml@man/tools/%.xml@g' Makefile.target
+          ./configure --disable-gtk --disable-sdl --disable-freetype --disable-readline
+          make -j2
+          rm -rf .git
+      - name: Fetch a matching experimental browser runtime
+        run: |
+          mkdir -p output/runtime/data/plugins
+          curl -fL --retry 2 https://scummvm.kuendig.io/scummvm.js -o output/runtime/scummvm.js
+          curl -fL --retry 2 https://scummvm.kuendig.io/scummvm.wasm -o output/runtime/scummvm.wasm
+          curl -fL --retry 2 https://scummvm.kuendig.io/data/plugins/libscumm.so -o output/runtime/data/plugins/libscumm.so
+          curl -fL --retry 2 https://scummvm.kuendig.io/data/plugins/libsludge.so -o output/runtime/data/plugins/libsludge.so
+          curl -fL --retry 2 https://scummvm.kuendig.io/data/index.json -o output/runtime/data/index.json
+          curl -fL --retry 2 https://scummvm.kuendig.io/scummvm.html -o output/runtime/upstream-shell.html
+          sha256sum output/runtime/scummvm.* output/runtime/data/plugins/* > output/runtime/SHA256SUMS
+      - name: Package native ScummVM and its dependency libraries for testing
+        run: |
+          mkdir -p output/native/lib
+          cp /usr/games/scummvm output/native/
+          ldd /usr/games/scummvm | awk '/=> \/|^\s*\// {for(i=1;i<=NF;i++) if($i ~ /^\//) print $i}' | while read -r lib; do cp -L "$lib" output/native/lib/; done
+          /usr/games/scummvm --version > output/native/VERSION.txt
+      - name: Upload toolchain
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: subway-scummvm-toolchain
+          path: output
+          retention-days: 7
