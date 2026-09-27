@@ -15,6 +15,9 @@ async function boot(){startEl.hidden=true;progressEl.hidden=false;statusEl.textC
  window.Module={canvas,arguments:['--config=/boot.ini','--path=/game','--savepath=/saves','--music-driver=null','--gfx-mode=normal','--no-filtering','--no-aspect-ratio','--debuglevel=3','tentacle'],print:report,printErr:report,setStatus:line=>{if(line&&!ready)statusEl.textContent=line;},onAbort:failed,
  preRun:[()=>{for(const p of ['/game','/plugins','/saves'])if(!FS.analyzePath(p).exists)FS.mkdir(p);for(const[p,b]of files)FS.writeFile(p,b);FS.writeFile('/boot.ini','[scummvm]\npluginspath=/plugins\ngui_theme=builtin\nsubtitles=true\nspeech_mute=true\nshow_splash=false\n');
  addRunDependency('tsfm-saves');try{FS.mount(IDBFS,{autoPersist:true},'/saves');FS.syncfs(true,e=>{if(e)report('Persistent saves unavailable: '+e);removeRunDependency('tsfm-saves');});}catch(e){report('Persistent saves unavailable: '+e);removeRunDependency('tsfm-saves');}}]};
+ // The upstream web shell resets Module.arguments and reads launch options from the fragment.
+ // Set the fragment without emitting hashchange, before that shell installs its listener.
+ history.replaceState(null,'',location.pathname+location.search+'#'+encodeURI(Module.arguments.join(' ')));
  const js=document.createElement('script');js.src='scummvm.js';js.onerror=()=>failed('Engine script download failed.');document.body.appendChild(js);timeout=setTimeout(()=>{if(!ready)failed('Engine startup timed out. Retry or open in a full desktop browser.');},90000);
 }catch(e){failed(e.message);}}
 startEl.onclick=boot;window.addEventListener('error',e=>failed(e.message));
