@@ -1,0 +1,785 @@
+{
+  "title": "In the Pale Moonlight \u2014 Chapter 1",
+  "schema": 1,
+  "settings": {
+    "walkSpeed": 5,
+    "speechSpeed": 65,
+    "horizon": 100,
+    "scaleDivide": 220
+  },
+  "flags": [
+    "read_report",
+    "strategy",
+    "has_padd",
+    "assessment",
+    "complete"
+  ],
+  "rooms": [
+    {
+      "id": "office",
+      "name": "CAPTAIN'S OFFICE",
+      "background": "office",
+      "spawn": [
+        460,
+        322
+      ],
+      "floor": [
+        [
+          [
+            32,
+            265
+          ],
+          [
+            201,
+            265
+          ],
+          [
+            201,
+            310
+          ],
+          [
+            401,
+            310
+          ],
+          [
+            401,
+            263
+          ],
+          [
+            608,
+            263
+          ],
+          [
+            625,
+            346
+          ],
+          [
+            15,
+            346
+          ]
+        ]
+      ],
+      "objects": [
+        {
+          "id": "chair",
+          "name": "chair",
+          "asset": "chair",
+          "x": 226,
+          "y": 174,
+          "width": 68,
+          "height": 86,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            260,
+            320
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "I have spent enough time sitting with these reports.",
+              "requires": [],
+              "sets": []
+            }
+          ]
+        },
+        {
+          "id": "plant",
+          "name": "Bajoran plant",
+          "asset": "plant",
+          "x": 121,
+          "y": 176,
+          "width": 50,
+          "height": 78,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            146,
+            320
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "Someone still finds time to keep things alive.",
+              "requires": [],
+              "sets": []
+            }
+          ]
+        },
+        {
+          "id": "desk",
+          "name": "Sisko's desk",
+          "asset": "desk",
+          "x": 195,
+          "y": 224,
+          "width": 200,
+          "height": 88,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            295,
+            320
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "A clear desk. That used to mean the day was over.",
+              "requires": [],
+              "sets": []
+            }
+          ]
+        },
+        {
+          "id": "terminal",
+          "name": "secure terminal",
+          "asset": "terminal",
+          "x": 294,
+          "y": 192,
+          "width": 50,
+          "height": 54,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            319,
+            320
+          ],
+          "layer": 1,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "A secure link to Starfleet. The casualty report is waiting.",
+              "requires": [],
+              "sets": []
+            },
+            {
+              "verb": "Use",
+              "text": "Another list of ships that will not return. I need the strategic picture, not another projection.",
+              "requires": [],
+              "sets": [
+                "read_report"
+              ]
+            },
+            {
+              "verb": "Open",
+              "text": "The casualty report is already on the screen. Use the terminal to review it.",
+              "requires": [],
+              "sets": []
+            }
+          ]
+        },
+        {
+          "id": "padd",
+          "name": "command PADD",
+          "asset": "padd",
+          "x": 228,
+          "y": 236,
+          "width": 26,
+          "height": 32,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            241,
+            320
+          ],
+          "layer": 1,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "My command PADD. I can take the assessment with me.",
+              "requires": [],
+              "sets": []
+            },
+            {
+              "verb": "Pick up",
+              "text": "",
+              "requires": [],
+              "sets": [
+                "has_padd"
+              ]
+            },
+            {
+              "verb": "Use",
+              "text": "I need to review the strategic display in Ops before I can prepare an assessment.",
+              "requires": [
+                "!strategy"
+              ],
+              "sets": []
+            },
+            {
+              "verb": "Use",
+              "text": "The assessment is ready. The Romulans are the missing factor.",
+              "requires": [
+                "strategy"
+              ],
+              "sets": []
+            }
+          ],
+          "pickup": true
+        },
+        {
+          "id": "baseball",
+          "name": "baseball",
+          "asset": "baseball",
+          "x": 361,
+          "y": 214,
+          "width": 26,
+          "height": 30,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            374,
+            320
+          ],
+          "layer": 1,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "A game has rules. A war is less obliging.",
+              "requires": [],
+              "sets": []
+            },
+            {
+              "verb": "Pick up",
+              "text": "It belongs here. A reminder that there is something beyond this office.",
+              "requires": [],
+              "sets": []
+            }
+          ]
+        },
+        {
+          "id": "office_exit",
+          "name": "door to Ops",
+          "asset": "",
+          "x": 524,
+          "y": 87,
+          "width": 90,
+          "height": 152,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            553,
+            267
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "The door opens onto Ops.",
+              "requires": [],
+              "sets": []
+            }
+          ],
+          "exit": "ops"
+        }
+      ]
+    },
+    {
+      "id": "ops",
+      "name": "OPERATIONS",
+      "background": "ops",
+      "spawn": [
+        108,
+        331
+      ],
+      "floor": [
+        [
+          [
+            27,
+            318
+          ],
+          [
+            194,
+            318
+          ],
+          [
+            194,
+            274
+          ],
+          [
+            244,
+            259
+          ],
+          [
+            405,
+            259
+          ],
+          [
+            443,
+            263
+          ],
+          [
+            611,
+            261
+          ],
+          [
+            625,
+            346
+          ],
+          [
+            15,
+            346
+          ]
+        ]
+      ],
+      "objects": [
+        {
+          "id": "display",
+          "name": "strategic display",
+          "asset": "console",
+          "x": 246,
+          "y": 175,
+          "width": 136,
+          "height": 80,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            314,
+            320
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "Federation and Klingon positions. Too many retreating lines.",
+              "requires": [],
+              "sets": []
+            },
+            {
+              "verb": "Use",
+              "text": "The Romulan border remains quiet. The Dominion can move forces elsewhere without fearing a second front.",
+              "requires": [
+                "read_report"
+              ],
+              "sets": [
+                "strategy"
+              ]
+            },
+            {
+              "verb": "Use",
+              "text": "First I should review the current casualty report in my office.",
+              "requires": [
+                "!read_report"
+              ],
+              "sets": []
+            },
+            {
+              "verb": "Use item",
+              "text": "I have recorded the assessment. A neutral Romulus is a luxury our enemy can afford. We cannot.",
+              "requires": [
+                "strategy",
+                "has_padd"
+              ],
+              "sets": [
+                "assessment"
+              ],
+              "item": "padd"
+            }
+          ]
+        },
+        {
+          "id": "opsconsole",
+          "name": "duty console",
+          "asset": "console",
+          "x": 57,
+          "y": 236,
+          "width": 136,
+          "height": 80,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            125,
+            320
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "Shift reports, repair schedules, and requests for ships we do not have.",
+              "requires": [],
+              "sets": []
+            }
+          ]
+        },
+        {
+          "id": "office_door",
+          "name": "captain's office",
+          "asset": "",
+          "x": 20,
+          "y": 108,
+          "width": 88,
+          "height": 111,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            91,
+            275
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "My office.",
+              "requires": [],
+              "sets": []
+            }
+          ],
+          "exit": "office"
+        },
+        {
+          "id": "lift",
+          "name": "turbolift to the Promenade",
+          "asset": "",
+          "x": 538,
+          "y": 91,
+          "width": 82,
+          "height": 145,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            555,
+            284
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "Garak keeps his shop on the Promenade.",
+              "requires": [],
+              "sets": []
+            }
+          ],
+          "exit": "shop"
+        }
+      ]
+    },
+    {
+      "id": "shop",
+      "name": "GARAK'S CLOTHIERS",
+      "background": "shop",
+      "spawn": [
+        123,
+        321
+      ],
+      "floor": [
+        [
+          [
+            26,
+            259
+          ],
+          [
+            240,
+            259
+          ],
+          [
+            240,
+            302
+          ],
+          [
+            423,
+            302
+          ],
+          [
+            423,
+            267
+          ],
+          [
+            610,
+            267
+          ],
+          [
+            625,
+            346
+          ],
+          [
+            15,
+            346
+          ]
+        ]
+      ],
+      "objects": [
+        {
+          "id": "table",
+          "name": "cutting table",
+          "asset": "table",
+          "x": 254,
+          "y": 219,
+          "width": 158,
+          "height": 76,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            333,
+            320
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "Every tool has its place. That seems important to Garak.",
+              "requires": [],
+              "sets": []
+            }
+          ]
+        },
+        {
+          "id": "fabric",
+          "name": "folded fabric",
+          "asset": "fabric",
+          "x": 304,
+          "y": 217,
+          "width": 56,
+          "height": 36,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            332,
+            320
+          ],
+          "layer": 1,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "Muted cloth, carefully folded. Garak always notices details.",
+              "requires": [],
+              "sets": []
+            }
+          ]
+        },
+        {
+          "id": "garak",
+          "name": "Garak",
+          "asset": "garak",
+          "x": 405,
+          "y": 171,
+          "width": 46,
+          "height": 102,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            384,
+            303
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "A tailor with a talent for knowing what people leave unsaid.",
+              "requires": [],
+              "sets": []
+            },
+            {
+              "verb": "Talk to",
+              "text": "You have the expression of a man about to ask for something difficult.",
+              "requires": [],
+              "sets": [],
+              "speaker": "garak",
+              "dialogue": "garak"
+            },
+            {
+              "verb": "Give",
+              "text": "A useful assessment, Captain. But I suspect this visit is about what is missing from it.",
+              "requires": [
+                "assessment"
+              ],
+              "sets": [],
+              "item": "padd",
+              "speaker": "garak",
+              "dialogue": "garak"
+            },
+            {
+              "verb": "Give",
+              "text": "An empty PADD is a rather abstract commission, Captain.",
+              "requires": [
+                "!assessment"
+              ],
+              "sets": [],
+              "item": "padd",
+              "speaker": "garak"
+            }
+          ],
+          "npc": true
+        },
+        {
+          "id": "shop_exit",
+          "name": "door to the Promenade",
+          "asset": "",
+          "x": 38,
+          "y": 93,
+          "width": 76,
+          "height": 139,
+          "rotation": 0,
+          "flip": false,
+          "tint": "#ffffff",
+          "opacity": 100,
+          "walk": [
+            101,
+            278
+          ],
+          "layer": 0,
+          "actions": [
+            {
+              "verb": "Look at",
+              "text": "The turbolift will take me back to Ops.",
+              "requires": [],
+              "sets": []
+            }
+          ],
+          "exit": "ops"
+        }
+      ]
+    }
+  ],
+  "dialogues": {
+    "garak": [
+      {
+        "label": "Can your old contacts obtain Dominion intelligence?",
+        "requires": [
+          "assessment"
+        ],
+        "lines": [
+          [
+            "sisko",
+            "I need evidence of the Dominion's intentions toward Romulus. Evidence their government will believe."
+          ],
+          [
+            "garak",
+            "My former acquaintances are not accustomed to requests from Starfleet captains."
+          ],
+          [
+            "sisko",
+            "Then ask as a tailor. I need to know whether there is a way."
+          ],
+          [
+            "garak",
+            "I can make inquiries. I would advise you to decide how far you are prepared to follow the answers."
+          ]
+        ],
+        "sets": [
+          "complete"
+        ]
+      },
+      {
+        "label": "Why keep a shop open during a war?",
+        "lines": [
+          [
+            "garak",
+            "Because people continue to tear their sleeves, Captain. Some problems remain pleasingly simple."
+          ]
+        ]
+      },
+      {
+        "label": "I need to finish my assessment.",
+        "requires": [
+          "!assessment"
+        ],
+        "lines": [
+          [
+            "sisko",
+            "I should bring you something more useful than speculation."
+          ],
+          [
+            "garak",
+            "An excellent habit. I hope you will be able to maintain it."
+          ]
+        ]
+      },
+      {
+        "label": "That is all for now.",
+        "lines": []
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "number": 1,
+      "title": "The Quiet Border",
+      "status": "playable",
+      "premise": "Review the losses, prepare a strategic assessment, and ask Garak to investigate."
+    },
+    {
+      "number": 2,
+      "title": "Old Acquaintances",
+      "status": "planned",
+      "premise": "The search for reliable intelligence tests the limits of conventional methods."
+    },
+    {
+      "number": 3,
+      "title": "An Unwelcome Proposal",
+      "status": "planned",
+      "premise": "Sisko weighs a different route to Romulan involvement."
+    },
+    {
+      "number": 4,
+      "title": "The Specialist",
+      "status": "planned",
+      "premise": "An unreliable specialist becomes part of the undertaking."
+    },
+    {
+      "number": 5,
+      "title": "The Price of Cooperation",
+      "status": "planned",
+      "premise": "Private arrangements create public consequences on the station."
+    },
+    {
+      "number": 6,
+      "title": "A Convincing Record",
+      "status": "planned",
+      "premise": "The operation requires something that can withstand scrutiny."
+    },
+    {
+      "number": 7,
+      "title": "Necessary Supplies",
+      "status": "planned",
+      "premise": "Sisko confronts the cost of obtaining what the operation needs."
+    },
+    {
+      "number": 8,
+      "title": "The Visitor",
+      "status": "planned",
+      "premise": "A Romulan visitor puts the undertaking to its decisive test."
+    },
+    {
+      "number": 9,
+      "title": "The Consequence",
+      "status": "planned",
+      "premise": "Events move beyond Sisko's direct control."
+    },
+    {
+      "number": 10,
+      "title": "The Private Record",
+      "status": "planned",
+      "premise": "The political outcome leaves Sisko to confront his own responsibility."
+    }
+  ]
+}
