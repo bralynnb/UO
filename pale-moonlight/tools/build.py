@@ -78,18 +78,18 @@ def build():
  def emit(t):chunks.append(t)
  emit('# Generated from project.json; edit the project, then rebuild.\n')
  for f in p['flags']:emit('var f_'+f+' = 0;')
- emit('var inventory = newStack(); var invOffset=0; var roomNow = 0; var verb = "Walk to"; var held = NULL; var busy = 0; var editing = 0; var selected = -1; var choosing = 0; var choice = -1; var floorVisible = 0;')
+ emit('var inventory = newStack(); var invOffset=0; var roomNow = 0; var verb = "Walk to"; var held = NULL; var busy = 0; var choosing = 0; var choice = -1;')
  emit('var px = newStack('+','.join(str(o['x']) for o in objects)+');')
  emit('var py = newStack('+','.join(str(o['y']) for o in objects)+');')
  emit('sub inInventory(o) { var i=0; while(i<stackSize(inventory)) { if(inventory[i]==o)return TRUE; i++; } return FALSE; }')
  emit('objectType sisko ("") { speechColour 225, 210, 166; }')
  for o in objects:emit('objectType '+o['id']+' ('+q(o['name'])+') { speechColour 163, 199, 199; }')
  emit('sub egoCostume () { return costume ('+','.join(["anim ('../assets/sisko.duc',%d)"%(d*7) for d in range(4)]+["anim ('../assets/sisko.duc',"+','.join('wait (%d, 4)'%(d*7+j) for j in range(1,7))+')' for d in range(4)]+["anim ('../assets/sisko.duc',%d)"%(d*7) for d in range(4)])+'); }')
- emit('sub init () { setCustomEncoding(4701); setFont (\'../assets/font.duc\', '+q(''.join(chr(i) for i in range(32,127)))+', 16); setCursor (anim (\'../assets/cursor.duc\',0)); setSpeechSpeed ('+str(s['speechSpeed'])+'); setSpeechMode (TEXTONLY); setScale ('+str(s['horizon'])+','+str(s['scaleDivide'])+'); addStatus (); alignStatus (LEFT); positionStatus (18,357); setStatusColour (217,184,126); if (fileExists ("layout-v1-x.dat")) { var saved = loadCustomData ("layout-v1-x.dat"); if (stackSize(saved) == stackSize(px)) px = saved; } if (fileExists ("layout-v1-y.dat")) { var savedY = loadCustomData ("layout-v1-y.dat"); if (stackSize(savedY) == stackSize(py)) py = savedY; } onLeftMouse (click); onRightMouse (rightClick); onKeyboard (keys); onFocusChange (focus); enterRoom (0); }')
+ emit('sub init () { setCustomEncoding(4701); setFont (\'../assets/font.duc\', '+q(''.join(chr(i) for i in range(32,127)))+', 16); setCursor (anim (\'../assets/cursor.duc\',0)); setSpeechSpeed ('+str(s['speechSpeed'])+'); setSpeechMode (TEXTONLY); setScale ('+str(s['horizon'])+','+str(s['scaleDivide'])+'); addStatus (); alignStatus (LEFT); positionStatus (18,357); setStatusColour (217,184,126); onLeftMouse (click); onRightMouse (rightClick); onKeyboard (keys); onFocusChange (focus); enterRoom (0); }')
  emit('sub gui () { setBlankColour (10,15,22); blankArea (0,352,639,479); setBlankColour (118,94,65); blankArea (0,350,639,351); setPasteColour (177,153,114);')
  for i,v in enumerate(VERBS):emit('pasteString ('+str(18+(i%3)*101)+','+str(388+(i//3)*24)+','+q(v)+');')
- emit('setPasteColour (91,118,131); pasteString (342,385,"INVENTORY"); var ii=invOffset; setPasteColour (208,194,158); while(ii<stackSize(inventory) && ii<invOffset+2) { pasteString(342,410+(ii-invOffset)*21,inventory[ii]); ii++; } if(stackSize(inventory)>2) pasteString(584,435,">>"); if(f_complete) {setPasteColour(225,197,143);pasteString(342,452,"CHAPTER 1 COMPLETE");} setPasteColour (96,110,125); pasteString (18,462,"F1 Help   F2 Edit   F5 Save   F7 Load"); if (editing) { setBlankColour (20,34,41); blankArea (0,352,639,479); setPasteColour (210,184,129); pasteString (18,384,"PLACEMENT EDITOR"); pasteString (18,410,"Click object, then click a new position."); pasteString (18,432,"Arrows nudge. S saves. F shows floor. F2 exits."); } statusText (verb); }')
- emit('sub focus (o) { if (! o) o=""; if (busy || choosing) return; if (editing) { statusText ("Edit: " + o); return; } if (held) statusText (verb + " " + held + " with " + o); else statusText (verb + " " + o); }')
+ emit('setPasteColour (91,118,131); pasteString (342,385,"INVENTORY"); var ii=invOffset; setPasteColour (208,194,158); while(ii<stackSize(inventory) && ii<invOffset+2) { pasteString(342,410+(ii-invOffset)*21,inventory[ii]); ii++; } if(stackSize(inventory)>2) pasteString(584,435,">>"); if(f_complete) {setPasteColour(225,197,143);pasteString(342,452,"CHAPTER 1 COMPLETE");} setPasteColour (96,110,125); pasteString (18,462,"F1 Help   F5 Save   F7 Load"); statusText (verb); }')
+ emit('sub focus (o) { if (! o) o=""; if (busy || choosing) return; if (held) statusText (verb + " " + held + " with " + o); else statusText (verb + " " + o); }')
  emit('sub place (i) {')
  dims={}
  for o in objects:
@@ -105,7 +105,7 @@ def build():
   i=ix[o['id']]
   emit('if (i == '+str(i)+') { jumpCharacter ('+o['id']+',px['+str(i)+']+'+str(int(o['width'])//2)+',py['+str(i)+']+'+str((int(o['height'])+im.height)//2)+'); return; }')
  emit('}')
- emit('sub enterRoom (n) { removeAllCharacters (); removeAllScreenRegions (); setFloor (NULL); roomNow = n; selected = -1; floorVisible = 0;')
+ emit('sub enterRoom (n) { removeAllCharacters (); removeAllScreenRegions (); setFloor (NULL); roomNow = n;')
  for ri,r in enumerate(p['rooms']):
   tris=[t for poly in r['floor'] for t in floor_polygons(poly)]
   (G/(r['id']+'.flo')).write_text('\n'.join('* '+ '; '.join(f'{x},{y}' for x,y in t) for t in tris)+'\n')
@@ -126,13 +126,11 @@ def build():
    i=ix[ob['id']];emit('if((inInventory('+ob['id']+') == FALSE) && x>=px['+str(i)+'] && x<=px['+str(i)+']+'+str(ob['width'])+' && y>=py['+str(i)+'] && y<=py['+str(i)+']+'+str(ob['height'])+') o='+ob['id']+';')
   emit('}')
  emit('return o; }')
- emit('sub click () { if (busy) { skipSpeech (); return; } var x = getMouseX (); var y = getMouseY (); var o = hit(x,y); if (choosing) { if (y >= 376) choice = (y-376)/22; return; } if (editing) { if (y >= 350) return; if (selected >= 0) { px[selected] = x; py[selected] = y; place (selected); selected = -1; statusText ("Placed. S saves this layout."); return; }')
- for o in objects:
-  if o['asset']:emit('if (o == '+o['id']+') { selected = '+str(ix[o['id']])+'; statusText ("Place top-left of '+o['name'].replace('"','')+'"); return; }')
- emit('return; } if (y >= 386 && y < 454 && x < 320) { var c = (x-18)/101; var r = (y-386)/24; var vs = newStack("Give","Open","Close","Pick up","Look at","Talk to","Use","Push","Pull"); if (c >= 0 && c < 3 && r >= 0 && r < 3) verb = vs[r*3+c]; focus (NULL); return; } if (y >= 430 && y < 452 && x >= 570 && stackSize(inventory)>2) {invOffset=invOffset+2;if(invOffset>=stackSize(inventory))invOffset=0;gui();return;} if (y >= 407 && y < 450 && x >= 330) {var ii=invOffset+(y-407)/21; if(ii<stackSize(inventory)) { held=inventory[ii]; if(verb=="Look at") {busy=1;act(held);busy=0;held=NULL;} else if(verb!="Give") verb="Use"; focus(NULL);}return; } if (y >= 350) return; if (! o) { held = NULL; verb = "Walk to"; stopCharacter(sisko); moveCharacter (sisko,x,y); return; } busy=1; stopCharacter(sisko);')
+ emit('sub click () { if (busy) { skipSpeech (); return; } var x = getMouseX (); var y = getMouseY (); var o = hit(x,y); if (choosing) { if (y >= 376) choice = (y-376)/22; return; }')
+ emit('if (y >= 386 && y < 454 && x < 320) { var c = (x-18)/101; var r = (y-386)/24; var vs = newStack("Give","Open","Close","Pick up","Look at","Talk to","Use","Push","Pull"); if (c >= 0 && c < 3 && r >= 0 && r < 3) verb = vs[r*3+c]; focus (NULL); return; } if (y >= 430 && y < 452 && x >= 570 && stackSize(inventory)>2) {invOffset=invOffset+2;if(invOffset>=stackSize(inventory))invOffset=0;gui();return;} if (y >= 407 && y < 450 && x >= 330) {var ii=invOffset+(y-407)/21; if(ii<stackSize(inventory)) { held=inventory[ii]; if(verb=="Look at") {busy=1;act(held);busy=0;held=NULL;} else if(verb!="Give") verb="Use"; focus(NULL);}return; } if (y >= 350) return; if (! o) { held = NULL; verb = "Walk to"; stopCharacter(sisko); moveCharacter (sisko,x,y); return; } busy=1; stopCharacter(sisko);')
  for o in objects:emit('if (o == '+o['id']+') moveCharacter(sisko,'+','.join(map(str,o['walk']))+');')
  emit('act (o); held = NULL; verb = "Walk to"; busy=0; gui (); }')
- emit('sub rightClick () { if (busy) { skipSpeech(); return; } if (editing) { selected=-1; return; } verb="Look at"; click (); }')
+ emit('sub rightClick () { if (busy) { skipSpeech(); return; } verb="Look at"; click (); }')
  emit('sub act (o) {')
  roomids={r['id']:i for i,r in enumerate(p['rooms'])}
  def condition(fs):return ' && '.join(('! ' if f.startswith('!') else '')+'f_'+f.lstrip('!') for f in fs) or 'TRUE'
@@ -164,7 +162,7 @@ def build():
    for f in c.get('sets',[]):emit('f_'+f+'=1;')
    emit('}')
   emit('if(f_complete) { say(sisko,"I have set something in motion. For now, I am calling it an inquiry."); gui(); setPasteColour(225,197,143); pasteString(350,444,"CHAPTER 1 COMPLETE"); saveGame("chapter1-complete.sav"); } }')
- emit('sub keys (k) { if (busy) { if (k==" " || k=="ESCAPE") skipSpeech(); return; } if (choosing) return; if (k=="F2") { if (floorVisible) {showFloor();floorVisible=0;} editing=!editing; selected=-1; gui(); return; } if (editing) { if(k=="f") { showFloor(); floorVisible=!floorVisible; } if(k=="s") {saveCustomData(px,"layout-v1-x.dat"); saveCustomData(py,"layout-v1-y.dat"); statusText("Layout saved. Project Studio edits remain in project.json.");} if(selected>=0) { if(k=="LEFT")px[selected]--; if(k=="RIGHT")px[selected]++; if(k=="UP")py[selected]--; if(k=="DOWN")py[selected]++; place(selected); } return; } if(k=="F5") { saveGame("chapter1.sav"); statusText("Game saved."); } if(k=="F7") { if(fileExists("chapter1.sav")) loadGame("chapter1.sav"); else statusText("No saved game yet."); } if(k=="F1") { busy=1; say(sisko,"Choose a verb, then an object. Click the floor to walk. Right-click examines. Click during speech to advance."); if(!f_read_report) say(sisko,"The secure terminal in my office has the casualty report."); else if(!f_strategy) say(sisko,"The strategic display in Ops will show where the pressure is coming from."); else if(!f_has_padd) say(sisko,"My PADD is on the desk in my office."); else if(!f_assessment) say(sisko,"Use the command PADD with the strategic display in Ops."); else if(!f_complete) say(sisko,"Garak may have contacts who can help. I should speak to him."); else say(sisko,"Chapter one is complete. Garak will begin his inquiries in chapter two."); busy=0; } }')
+ emit('sub keys (k) { if (busy) { if (k==" " || k=="ESCAPE") skipSpeech(); return; } if (choosing) return; if(k=="F5") { saveGame("chapter1.sav"); statusText("Game saved."); } if(k=="F7") { if(fileExists("chapter1.sav")) loadGame("chapter1.sav"); else statusText("No saved game yet."); } if(k=="F1") { busy=1; say(sisko,"Choose a verb, then an object. Click the floor to walk. Right-click examines. Click during speech to advance."); if(!f_read_report) say(sisko,"The secure terminal in my office has the casualty report."); else if(!f_strategy) say(sisko,"The strategic display in Ops will show where the pressure is coming from."); else if(!f_has_padd) say(sisko,"My PADD is on the desk in my office."); else if(!f_assessment) say(sisko,"Use the command PADD with the strategic display in Ops."); else if(!f_complete) say(sisko,"Garak may have contacts who can help. I should speak to him."); else say(sisko,"Chapter one is complete. Garak will begin his inquiries in chapter two."); busy=0; } }')
  # Append, rather than prepend, visible choices.
  source='\n'.join(chunks).replace('pushToStack(options,','enqueue(options,')
  source=re.sub(r'!(?=[A-Za-z])', '! ', source)
